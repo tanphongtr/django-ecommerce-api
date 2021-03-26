@@ -1,1 +1,1 @@
-# django-ecommerce-api
+# django-api
