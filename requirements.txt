@@ -1,7 +1,7 @@
 Django>=3.1.7
 django-filter>=2.4.0
 mysqlclient>=2.0.3
-djangorestframework==3.11.1 # Fix compat with Django 3.1
+djangorestframework==3.12.3
 drf-yasg>=1.20.0
 Celery>=5.0.5
 redis>=3.5.3
