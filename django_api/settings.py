@@ -25,7 +25,7 @@ SECRET_KEY = 'vn5iga)cc=i6n$w&zz45u)$@(#c&oal%77w77b8y0b)bs1o#t6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,7 +42,10 @@ INSTALLED_APPS = [
 # Application startapp
 
 INSTALLED_APPS += [
-    'app'
+    'rest_framework',
+    'drf_yasg',  # swagger
+    'app',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +86,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_api',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
+        'PORT': '3366',
     }
 }
 
