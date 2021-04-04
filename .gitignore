@@ -140,3 +140,5 @@ cython_debug/
 # Django migrations
 migrations/
 
+# files
+files/

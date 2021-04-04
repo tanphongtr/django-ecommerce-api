@@ -25,7 +25,7 @@ SECRET_KEY = 'vn5iga)cc=i6n$w&zz45u)$@(#c&oal%77w77b8y0b)bs1o#t6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
 INSTALLED_APPS += [
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_yasg',  # swagger
     'app',
     'api',
@@ -56,6 +57,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+MIDDLEWARE += [
+    # da ngon ngu
+    'django.middleware.locale.LocaleMiddleware',
+    'drf_yasg.middleware.SwaggerExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'django_api.urls'
@@ -137,4 +144,117 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+import os
 STATIC_URL = '/static/'
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "files")
+STATIC_ROOT = "var/www/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'django_api', 'static'),
+]
+
+# Rest Framework
+
+REST_FRAMEWORK = {
+
+    # API version
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
+    # 'DEFAULT_VERSION': 'v1', # comment tren swagger se hien nhieu phien ban
+    # 'ALLOWED_VERSIONS': ('v1', 'v2'),
+
+    # Unix timestamp
+    # 'DATETIME_FORMAT': '%s.%f',
+
+    # Timestamp for Js
+    # 'DATETIME_FORMAT': '%s000.%f',
+
+    # 'DATE_FORMAT': '%s000.%f',
+
+    # Authentication
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'EXCEPTION_HANDLER': 'app.utils.custom_exception_handler',
+    
+    # 'EXCEPTION_HANDLER': 'django_api.ultils.exception.custom_exception_handler', # Thông báo lỗi
+
+    # https://www.django-rest-framework.org/api-guide/metadata/
+    # 'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata', 
+}
+
+SWAGGER_SETTINGS = {
+    # 'USE_SESSION_AUTH': False,
+    # 'SECURITY_DEFINITIONS': {
+    #     'basic': {
+    #         'type': 'basic'
+    #     },
+    #     'api_key': {
+    #         'type': 'apiKey',
+    #         'in': 'header',
+    #         'name': 'Authorization'
+    #     }
+    # },
+    # 'APIS_SORTER': 'alpha',
+    'SUPPORTED_SUBMIT_METHODS': ['get', 'post', 'put', 'delete', 'patch'],
+    'OPERATIONS_SORTER': 'alpha',
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+
+    # Hidden model in swagger docs
+    'DEFAULT_FIELD_INSPECTORS': [
+        'drf_yasg.inspectors.CamelCaseJSONFilter',
+        'drf_yasg.inspectors.InlineSerializerInspector',
+        'drf_yasg.inspectors.RelatedFieldInspector',
+        'drf_yasg.inspectors.ChoiceFieldInspector',
+        'drf_yasg.inspectors.FileFieldInspector',
+        'drf_yasg.inspectors.DictFieldInspector',
+        'drf_yasg.inspectors.SimpleFieldInspector',
+        'drf_yasg.inspectors.StringDefaultFieldInspector',
+    ],
+
+}
+
+from django.utils.translation import ugettext_lazy as _
+LANGUAGES = [
+    ('de', _('German')),
+    ('en', _('English')),
+    ('vi-vn', _('Vietnamese')),
+]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+        'TIMEOUT': 300 
+    }
+}
+
+
+# Locale
+import os
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
+from django.http import JsonResponse
+
+
+def custom404(request, exception=None):
+    return JsonResponse({
+        'status_code': 404,
+        'error': 'The resource was not found'
+    })
+
+
+handler404 = custom404

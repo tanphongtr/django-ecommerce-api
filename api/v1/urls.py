@@ -14,17 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 from django.conf.urls import url
+from django.conf.urls.static import static
+from django.conf import settings
 
+from .auth import AuthViewSet
+from .post import PostViewSet, PostDetailViewSet
+from .file import FileAPIView, FileDetailAPIView
 
 urlpatterns = [
-    path('v1/', include('api.v1.urls')),
-    # path('v1/', include('api.v1.urls')),
-]
+    path('auth/', AuthViewSet.as_view()),
+    path('posts/', PostViewSet.as_view()),
+    path('posts/<str:uuid>/', PostDetailViewSet.as_view()),
 
-# urlpatterns = [
-#     path('v1.1/', include(('api.v1_1.urls', 'api'), namespace='v1.1')),
-#     # path('v1.1/', include('api.v1_1.urls')),
-# ]
 
+    path('files/', FileAPIView.as_view()),
+    path('files/<uuid:sid>/', FileDetailAPIView.as_view()),
+    # path('test/', Test.as_view()),
+] 
