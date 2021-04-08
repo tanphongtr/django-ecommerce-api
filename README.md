@@ -22,3 +22,8 @@ python manage.py makemessages -l vi_VN
 python manage.py compilemessages
 
 ## Lỗi url: vào api/v1/file không được, phải thêm / vào cuối => xem lại cấu hình media_url
+
+## DOCKER
+Chạy lần đầu TK SupperUser sẽ tự động create:
+- User: admin
+- Password: 123456
