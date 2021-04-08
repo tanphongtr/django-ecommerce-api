@@ -103,17 +103,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+import os
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_api',
-        'USER': 'root',
-        'PASSWORD': '123456',
+        'NAME': os.getenv('MARIADB_DATABASE', 'django_api'),
+        'USER': os.getenv('MARIADB_ROOT_USER', 'root'),
+        'PASSWORD': os.getenv('MARIADB_ROOT_PASSWORD', '123456'),
         # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
         # 
-        'HOST': 'DOCKER_mariadb',
-        'PORT': '3306',
+        'HOST': os.getenv('MARIADB_CONTAINER_NAME', 'localhost'),
+        'PORT': os.getenv('MARIADB_PORT', '3366'),
     },
 
     'other': {
@@ -266,7 +267,7 @@ LANGUAGES = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://" + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ":6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "SOCKET_CONNECT_TIMEOUT": 5,  # seconds

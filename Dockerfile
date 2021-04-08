@@ -9,6 +9,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY ./requirements.txt /requirements.txt
+COPY ./.env /app/.env
 RUN pip install -r /requirements.txt
 
 COPY . /app
