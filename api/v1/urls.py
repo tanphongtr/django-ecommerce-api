@@ -26,7 +26,7 @@ from .file import FileAPIView, FileDetailAPIView
 urlpatterns = [
     path('auth/', AuthViewSet.as_view()),
     path('posts/', PostViewSet.as_view()),
-    path('posts/<str:uuid>/', PostDetailViewSet.as_view()),
+    path('posts/<uuid:uuid>/', PostDetailViewSet.as_view()),
 
 
     path('files/', FileAPIView.as_view()),

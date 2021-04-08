@@ -17,17 +17,17 @@ from .serializers import (
 class AuthViewSet(generics.CreateAPIView):
     serializer_class = AuthTokenSerializer
 
-    @swagger_auto_schema(
-        tags=['Auth'],
-        operation_description='',
-        operation_id='Login',
-        operation_summary='Test',
-        responses={
-            # 200: AuthSerializer(),
-        },
-    )
+    # @swagger_auto_schema(
+    #     tags=['Auth'],
+    #     operation_description='',
+    #     operation_id='Login',
+    #     operation_summary='Test',
+    #     responses={
+    #         # 200: AuthSerializer(),
+    #     },
+    # )
     def post(self, request, *args, **kwargs):
-        print(request.version)
+        # print(request.version)
         serializer = self.serializer_class(
             data=request.data,
             context={'request': request}

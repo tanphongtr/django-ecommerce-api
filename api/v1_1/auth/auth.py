@@ -27,7 +27,7 @@ class AuthViewSet(generics.CreateAPIView):
         },
     )
     def post(self, request, *args, **kwargs):
-        print(request.version)
+        # print(request.version)
         serializer = self.serializer_class(
             data=request.data,
             context={'request': request}

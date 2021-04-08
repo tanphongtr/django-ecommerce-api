@@ -1,30 +1,38 @@
 from rest_framework import serializers
 from app.models import File
-from rest_framework.exceptions import ErrorDetail, ValidationError, NotFound
 from .exceptions import ServiceUnavailable
 from django.core.validators import FileExtensionValidator
-from django.conf import settings
-import os
 from django.utils.translation import gettext_lazy as _
+
 
 class FileField(serializers.FileField):
     def to_representation(self, value):
-        print(self.context)
         return super().to_representation(value)
+
+class FilesSerializer(serializers.Serializer):
+    test = serializers.CharField()
+    pass
 class FileSerializer(serializers.ModelSerializer):
-    file_url = FileField(write_only=True,
-        validators=[FileExtensionValidator(allowed_extensions=['jpg'])]
+    sid = serializers.UUIDField(read_only=True, )
+    file_url = FileField(
+        required=True,
+        write_only=True,
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg'], )
+        ]
     )
-    test = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    # test = FilesSerializer()
 
     class Meta:
         model = File
+        # fields = ('sid', 'url', 'file_url', 'created_at', )
         # fields = "__all__"
         exclude = ('id', )
 
-    
-
-    def get_test(self, obj):
+    # Custom Field
+    def get_url(self, obj):
         request = self.context.get('request', None)
         if request is not None:
             return request.build_absolute_uri('/download/' + str(obj.sid))
@@ -36,8 +44,7 @@ class FileSerializer(serializers.ModelSerializer):
         except ServiceUnavailable as ex:
             raise ex
 
-    # def save(self, **kwargs):
-    #     try:
-    #         return super().save(**kwargs)
-    #     except:
-    #         raise NotFound("SDfsdfds")
+    def validate(self, attrs):
+        if attrs.get('file_url', None):
+            attrs.get('file_url', None).size
+        return super().validate(attrs)

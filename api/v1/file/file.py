@@ -1,12 +1,17 @@
+from os import name
 from rest_framework import generics, status
 from app.models import File
 from .serializers import FileSerializer
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 class FileAPIView(generics.ListCreateAPIView):
     queryset = File.objects.all()
     serializer_class = FileSerializer
 
+    parser_classes = (MultiPartParser,)
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 

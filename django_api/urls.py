@@ -21,7 +21,7 @@ from rest_framework import permissions
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.schemas import get_schema_view as get_schema_views
-from .views import file_downloading
+from .views import file_downloading, Unauthorized
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -58,8 +58,11 @@ schema_view = get_schema_view(
 #         path('api/', include(v1_urlpatterns)),
 #     ],
 # )
+from django.views.debug import default_urlconf
+
 
 urlpatterns = [
+    path('', Unauthorized),
     path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # path('docs/v1/', v1_schema_view.with_ui('swagger',
@@ -68,4 +71,5 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls'))
     path('api/', include('api.urls')),
     path('download/<uuid:sid>/', file_downloading),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files
+]
+# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files

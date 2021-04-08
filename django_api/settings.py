@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from django.http import JsonResponse
+from django.utils.translation import ugettext_lazy as _
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -63,6 +66,11 @@ MIDDLEWARE += [
     # da ngon ngu
     'django.middleware.locale.LocaleMiddleware',
     'drf_yasg.middleware.SwaggerExceptionMiddleware',
+    # DataFlair #Caching Middleware
+
+    # Cache
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'django_api.urls'
@@ -102,7 +110,19 @@ DATABASES = {
         'NAME': 'django_api',
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
+        # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
+        # 
+        'HOST': 'DOCKER_mariadb',
+        'PORT': '3306',
+    },
+
+    'other': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_api2',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
+        'HOST': 'localhost',
         'PORT': '3366',
     }
 }
@@ -132,7 +152,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 
@@ -144,7 +165,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-import os
 STATIC_URL = '/static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
@@ -162,8 +182,11 @@ REST_FRAMEWORK = {
     # 'DEFAULT_VERSION': 'v1', # comment tren swagger se hien nhieu phien ban
     # 'ALLOWED_VERSIONS': ('v1', 'v2'),
 
-    # Unix timestamp
+    # Unix timestamp, only on Docker/Linux
     # 'DATETIME_FORMAT': '%s.%f',
+
+
+    # 'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
 
     # Timestamp for Js
     # 'DATETIME_FORMAT': '%s000.%f',
@@ -178,14 +201,14 @@ REST_FRAMEWORK = {
     ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'EXCEPTION_HANDLER': 'app.utils.custom_exception_handler',
-    
+
     # 'EXCEPTION_HANDLER': 'django_api.ultils.exception.custom_exception_handler', # Thông báo lỗi
 
     # https://www.django-rest-framework.org/api-guide/metadata/
-    # 'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata', 
+    # 'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
 }
 
 SWAGGER_SETTINGS = {
@@ -225,29 +248,44 @@ SWAGGER_SETTINGS = {
 
 }
 
-from django.utils.translation import ugettext_lazy as _
 LANGUAGES = [
     ('de', _('German')),
     ('en', _('English')),
     ('vi-vn', _('Vietnamese')),
 ]
 
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#         'LOCATION': 'my_cache_table',
+#         'TIMEOUT': 604800
+#     }
+# }
+
+
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'my_cache_table',
-        'TIMEOUT': 300 
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SOCKET_CONNECT_TIMEOUT": 5,  # seconds
+            "SOCKET_TIMEOUT": 5,  # seconds
+        },
+        "KEY_PREFIX": "example",
+        "TIMEOUT": 5,
+        "TTL": 5,
     }
 }
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 
 # Locale
-import os
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale')
 ]
-
-from django.http import JsonResponse
 
 
 def custom404(request, exception=None):
@@ -258,3 +296,5 @@ def custom404(request, exception=None):
 
 
 handler404 = custom404
+
+AUTH_USER_MODEL = 'app.User'

@@ -2,17 +2,51 @@ version: '3'
 
 services:
     api:
-        container_name: django_test
+        container_name: DOCKER_django_api
         build: .
-        command: python manage.py runserver 0.0.0.0:8000 # Docker
+        command: >
+            sh -c "python manage.py makemigrations
+            && python manage.py migrate
+            && python manage.py runserver 0.0.0.0:8000"
+                
         ports:
             - '8001:8000'
         volumes:
             - .:/app # mount code in local vs code in docker
 
-        # depends_on:
-        #     - db
-        #     - redis
+        depends_on:
+            - mariadb
+            - redis
+
+    mariadb:
+        #image: mariadb:10.2
+        image: mariadb
+        container_name: DOCKER_mariadb
+        ports:
+            - 3367:3306
+        # command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456
+            # Create DB
+            MYSQL_DATABASE: django_api
+    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: DOCKER_phpmyadmin
+        links:
+            - mariadb
+        environment:
+            PMA_HOST: mariadb
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: always
+        ports:
+            - 8081:80
+
+    redis:
+        image: "redis:alpine"
+        container_name: DOCKER_redis
 
 
 networks: # Sử dụng network đã có sẵn

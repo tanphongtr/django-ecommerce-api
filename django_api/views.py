@@ -18,7 +18,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 def file_downloading(request, sid):
-
     try:
         file = File.objects.get(sid=sid)
         if file:
@@ -28,3 +27,14 @@ def file_downloading(request, sid):
             )
     except:
         return HttpResponse(_("Phongtran"))
+
+from django.http import HttpResponse
+
+class Http401(HttpResponse):
+    def __init__(self):
+        super().__init__('401 Unauthorized', status=401)
+
+def Unauthorized(request):
+    return HttpResponse('Unauthorized', status=403)
+
+from django.contrib.auth.models import User
