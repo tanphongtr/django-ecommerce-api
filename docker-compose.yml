@@ -17,16 +17,20 @@ services:
 
         restart: ${APP_CONTAINER_RESTART} #always
 
-        environment:
-            APP_ROOT_USER: ${APP_ROOT_USER}
-            APP_ROOT_PASSWORD: ${APP_ROOT_PASSWORD}
-            APP_ROOT_EMAIL: ${APP_ROOT_EMAIL}
-            MARIADB_CONTAINER_NAME: ${MARIADB_CONTAINER_NAME}
-            MARIADB_PORT: ${MARIADB_PORT}
-            MARIADB_ROOT_USER: ${MARIADB_ROOT_USER}
-            MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-            MARIADB_DATABASE: ${MARIADB_DATABASE}
-            REDIS_CONTAINER_NAME: ${REDIS_CONTAINER_NAME}
+        env_file:
+            - .env.dev
+
+        # environment:
+        #     APP_ROOT_USER: ${APP_ROOT_USER}
+        #     APP_ROOT_PASSWORD: ${APP_ROOT_PASSWORD}
+        #     APP_ROOT_EMAIL: ${APP_ROOT_EMAIL}
+        #     MARIADB_CONTAINER_NAME: ${MARIADB_CONTAINER_NAME}
+        #     MARIADB_PORT: ${MARIADB_PORT}
+        #     MARIADB_ROOT_USER: ${MARIADB_ROOT_USER}
+        #     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+        #     MARIADB_DATABASE: ${MARIADB_DATABASE}
+        #     REDIS_CONTAINER_NAME: ${REDIS_CONTAINER_NAME}
+        #     PHONGTRAN: 1994
 
         depends_on:
             - mariadb
@@ -55,9 +59,12 @@ services:
             PMA_HOST: mariadb
             PMA_PORT: ${MARIADB_PORT}
             PMA_ARBITRARY: 1
+            UPLOAD_LIMIT: 300M
         restart: ${PHPMYADMIN_CONTAINER_RESTART}
         ports:
             - ${PHPMYADMIN_PUBLIC_PORT}:80
+        depends_on:
+            - mariadb
 
     redis:
         # Image Version: 6.2.1
