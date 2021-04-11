@@ -1,13 +1,6 @@
-import os
 import uuid
 from django.db import models
-
-
-class FileField(models.FileField):
-    def generate_filename(self, instance, filename):
-        _, ext = os.path.splitext(filename)
-        filename = f'{uuid.uuid4().hex}{ext}'
-        return super().generate_filename(instance, filename)
+from app.models import FileField
 
 
 class File(models.Model):

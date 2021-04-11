@@ -1,6 +1,6 @@
 import os
-# from app.models import User
-from django.contrib.auth.models import User
+from app.models import User
+# from django.contrib.auth.models import User
 
 try:
     superuser = User.objects.create_superuser(

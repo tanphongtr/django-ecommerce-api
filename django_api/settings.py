@@ -177,7 +177,8 @@ STATICFILES_DIRS = [
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'app.models.UnsignedAutoField'
 
 
 # Rest Framework
@@ -303,7 +304,7 @@ def custom404(request, exception=None):
 
 handler404 = custom404
 
-# AUTH_USER_MODEL = 'app.User'
+AUTH_USER_MODEL = 'app.User'
 
 
 # print( os.environ )
