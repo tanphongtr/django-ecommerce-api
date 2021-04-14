@@ -6,8 +6,14 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
+from rest_framework.authentication import BaseAuthentication, BasicAuthentication
+from rest_framework import permissions
+
 
 class FileAPIView(generics.ListCreateAPIView):
+    # authentication_classes = (BasicAuthentication, )
+    # permission_classes = (permissions.IsAuthenticated, )
+
     queryset = File.objects.all()
     serializer_class = FileSerializer
 

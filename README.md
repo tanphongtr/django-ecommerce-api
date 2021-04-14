@@ -1,6 +1,6 @@
 ```
-docker-compose --env-file .env.dev config 
-docker-compose --env-file .env.dev up 
+docker-compose --env-file .env.dev config
+docker-compose --env-file .env.dev up
 ```
 
 ## django-api
@@ -60,3 +60,27 @@ python manage.py loaddata filename.ext
 
 ## Send test email
 python manage.py sendtestemail your-email@gmail.com
+
+
+## Docker
+
+Exploring Docker container's file system
+```
+docker ps
+```
+Then:
+```
+docker exec -t -i mycontainer /bin/bash
+docker exec -t -i mycontainer sh
+```
+
+## MySQL
+```
+mysql -uroot -p123456
+
+show databases;
+use database-name
+```
+```
+source /var/www/scripts/xxx.sql
+```

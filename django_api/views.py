@@ -18,6 +18,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def file_downloading(request, sid):
+    """Return default image file"""
     try:
         file = File.objects.get(sid=sid)
         if file:
@@ -28,7 +29,6 @@ def file_downloading(request, sid):
     except:
         return HttpResponse(_("Phongtran"))
 
-from django.http import HttpResponse
 
 class Http401(HttpResponse):
     def __init__(self):
