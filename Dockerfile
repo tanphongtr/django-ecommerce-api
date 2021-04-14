@@ -1,4 +1,5 @@
-FROM python:3.7.9
+#3.9.4
+FROM python:3
 
 LABEL maintainer="Phong Tran"
 

@@ -48,18 +48,23 @@ services:
             MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
             # Auto Create DB
             MYSQL_DATABASE: ${MARIADB_DATABASE}
+
+        volumes:
+            - ./volumes_mysql:/var/lib/mysql
+            - ./volumes_mysql/scripts:/var/www/scripts # Run: source /var/www/scripts/xxx.sql
     
     phpmyadmin:
         # Image Version: 5.1.0
         image: phpmyadmin/phpmyadmin
         container_name: ${_PREFIX}_${PHPMYADMIN_CONTAINER_NAME}
-        links:
-            - mariadb
+        # links:
+        #     - mariadb
         environment:
             PMA_HOST: mariadb
-            PMA_PORT: ${MARIADB_PORT}
+            # PMA_PORT: ${MARIADB_PORT}
             PMA_ARBITRARY: 1
             UPLOAD_LIMIT: 300M
+            # MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
         restart: ${PHPMYADMIN_CONTAINER_RESTART}
         ports:
             - ${PHPMYADMIN_PUBLIC_PORT}:80
