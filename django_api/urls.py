@@ -64,7 +64,7 @@ from django.views.debug import default_urlconf
 
 urlpatterns = [
     path('', Unauthorized),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # path('docs/v1/', v1_schema_view.with_ui('swagger',
     #      cache_timeout=0), name='schema-swagger-ui'),
@@ -72,8 +72,7 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls'))
     path('api/', include('api.urls')),
     path('download/<uuid:sid>/', file_downloading),
-]
-# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files
-# urlpatterns += i18n_patterns(
-#     path('admin/', admin.site.urls),
-# )
+] # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files
+urlpatterns += i18n_patterns(
+    path('admin/', admin.site.urls),
+)
