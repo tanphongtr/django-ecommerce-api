@@ -84,3 +84,10 @@ use database-name
 ```
 source /var/www/scripts/xxx.sql
 ```
+
+
+## Heroku
+```
+Error: Cannot run more than 1 Free size dynos.
+Fix: https://stackoverflow.com/questions/34727605/heroku-cannot-run-more-than-1-free-size-dynos
+```
