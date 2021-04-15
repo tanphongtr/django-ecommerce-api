@@ -329,3 +329,8 @@ EMAIL_HOST_PASSWORD = 'ucnditvoiovkzawu'  # past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'default from email'
+
+
+# For heroku.com
+import django_heroku
+django_heroku.settings(locals())
