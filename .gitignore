@@ -138,7 +138,7 @@ dmypy.json
 cython_debug/
 
 # Django migrations
-migrations/
+# migrations/
 
 # Docker
 Dockerfile
