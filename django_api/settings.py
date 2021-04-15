@@ -63,7 +63,8 @@ MIDDLEWARE = [
 ]
 
 MIDDLEWARE += [
-    # da ngon ngu
+    # How the language is determined
+    # https://www.django-rest-framework.org/topics/internationalization/#how-the-language-is-determined
     'django.middleware.locale.LocaleMiddleware',
     'drf_yasg.middleware.SwaggerExceptionMiddleware',
     # DataFlair #Caching Middleware
@@ -265,6 +266,7 @@ LANGUAGES = [
     ('de', _('German')),
     ('en', _('English')),
     ('vi-vn', _('Vietnamese')),
+    ('ja-JP', _('Japanese')),
 ]
 
 # CACHES = {
