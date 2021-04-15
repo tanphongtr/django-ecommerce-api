@@ -106,6 +106,19 @@ DATABASES = {
     }
 }
 
+# dashboard.heroku.com -> app -> Overview -> Heroku Postgres -> Settings -> View Credentials...
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'deu3juvfppit7r',
+        'USER': 'myuzqvhmocqgrv',
+        'PASSWORD': '2b6f0dce8891bc60ea0341ba6bf9e0f651335a426c25788ff1e68e1f3747f8b2',
+        'HOST': 'ec2-18-215-111-67.compute-1.amazonaws.com',
+        'PORT': '',
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
