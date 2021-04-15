@@ -105,28 +105,6 @@ DATABASES = {
     }
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MARIADB_DATABASE', 'django_api'),
-        'USER': os.getenv('MARIADB_ROOT_USER', 'root'),
-        'PASSWORD': os.getenv('MARIADB_ROOT_PASSWORD', '123456'),
-        # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
-        'HOST': os.getenv('MARIADB_CONTAINER_NAME', 'localhost'),
-        'PORT': os.getenv('MARIADB_PORT', '3366'),
-    },
-
-    'other': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_api2',
-        'USER': 'root',
-        'PASSWORD': '123456',
-        # Or an IP Address that your DB is hosted on, 0.0.0.0 in docker linux
-        'HOST': 'localhost',
-        'PORT': '3366',
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
