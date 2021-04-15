@@ -35,6 +35,6 @@ class PostViewSet(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 
 class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
-    lookup_field = 'uuid'
+    lookup_field = 'sid'
     queryset = Post.objects.all()
     serializer_class = PostSerializer
