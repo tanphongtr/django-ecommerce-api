@@ -140,5 +140,9 @@ cython_debug/
 # Django migrations
 migrations/
 
+# Docker
+Dockerfile
+docker-compose.yml
+
 # files
 files/
