@@ -295,7 +295,7 @@ handler404 = custom404
 
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-AUTH_USER_MODEL
 
-# AUTH_USER_MODEL = 'app.User'
+AUTH_USER_MODEL = 'app.User'
 
 
 # Email
