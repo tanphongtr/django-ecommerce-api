@@ -24,7 +24,7 @@ from .post import PostViewSet, PostDetailViewSet, PostExportViewSet
 from .file import FileAPIView, FileDetailAPIView
 
 urlpatterns = [
-    path('auth/login', AuthViewSet.as_view()),
+    path('auth/login/', AuthViewSet.as_view()),
     path('auth/signup/', UserSignUpViewSet.as_view()),
     path('auth/logout/', AuthLogoutViewSet.as_view()),
     path('posts/', PostViewSet.as_view()),
