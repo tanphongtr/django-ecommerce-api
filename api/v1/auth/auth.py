@@ -10,7 +10,7 @@ from django.contrib.auth.models import (
     ContentType,
 )
 from .serializers import (
-    UserSerializer, AuthTokenSerializer
+    UserSerializer, AuthTokenSerializer, AuthForgotPasswordSerializer
 )
 from rest_framework.authentication import BaseAuthentication, TokenAuthentication, SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, BasePermission, DjangoModelPermissions as DMPer
@@ -61,6 +61,23 @@ class AuthLogoutViewSet(generics.CreateAPIView):
     #     },
     # )
     def post(self, request, *args, **kwargs):
+        try:
+            request.user.auth_token.delete()
+        except (AttributeError, ):
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    pass
+
+
+class AuthForgotPasswordViewSet(generics.CreateAPIView):
+    serializer_class = AuthForgotPasswordSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
         try:
             request.user.auth_token.delete()
         except (AttributeError, ):

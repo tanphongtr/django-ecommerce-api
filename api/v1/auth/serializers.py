@@ -1,3 +1,6 @@
+from django.db.models import Q
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from rest_framework import serializers, exceptions
@@ -37,11 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         models = User
 
-from django.conf import settings
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-from django.db.models import Q
-
 
 class UserSignUpSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -54,10 +52,9 @@ class UserSignUpSerializer(serializers.Serializer):
         # if User.objects.get(username=validated_data.get('username')):
         #     raise exceptions.AuthenticationFailed("SSS")
         user = User.objects.create_user(**validated_data)
-        token, created = Token.objects.get_or_create(user=user) 
+        token, created = Token.objects.get_or_create(user=user)
         return user
         return super().create(validated_data)
-
 
     # def validate(self, attrs):
     #     username = attrs.get('username')
@@ -108,4 +105,41 @@ class UserSignUpSerializer(serializers.Serializer):
         if user:
             msg = _('Email exist')
             raise serializers.ValidationError(msg, code='authorization')
+        return value
+
+
+class AuthForgotPasswordSerializer(serializers.Serializer):
+
+    email = serializers.CharField()
+
+    def validate_email(self, value):
+        """
+        Check that the blog post is about Django.
+        """
+
+        import re
+
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+            msg = _('Email is valid')
+            raise serializers.ValidationError(msg, code='authorization')
+
+        user = User.objects.filter(Q(email=value)).exists()
+        if not user:
+            msg = _('Email not exist')
+            raise serializers.ValidationError(msg, code='authorization')
+
+
+        from django.core.mail import send_mail
+        # from app.models import OTP
+
+        # otp = OTP.objects.create(user=user, )
+
+        # chuyển vào task celery
+        send_mail(
+            'PHONGTRANDEV RESET PASSWORD',
+            'Here is the message.',
+            'phongtran.dev',
+            [value],
+            fail_silently=False,
+        )
         return value

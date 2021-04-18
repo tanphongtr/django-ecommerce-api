@@ -27,17 +27,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, DjangoMo
 from rest_framework.authentication import BaseAuthentication, TokenAuthentication, SessionAuthentication, BasicAuthentication
 from drf_renderer_xlsx.renderers import XLSXRenderer
 
-class DjangoModelPermissions(DMPer):
-    perms_map = {
-        'GET': ['%(app_label)s.view_%(model_name)s'],
-        'OPTIONS': [],
-        'HEAD': [],
-        'POST': ['%(app_label)s.add_%(model_name)s'],
-        'PUT': ['%(app_label)s.change_%(model_name)s'],
-        'PATCH': ['%(app_label)s.change_%(model_name)s'],
-        'DELETE': ['%(app_label)s.delete_%(model_name)s'],
-    }
-
+from app.utils.permissons import ModelPermissions
 
 class StandardPagination(PageNumberPagination):
     page_size = 2
@@ -48,7 +38,7 @@ class StandardPagination(PageNumberPagination):
 class PostViewSet(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [ModelPermissions]
     authentication_classes = (TokenAuthentication, SessionAuthentication)
     from rest_framework.renderers import JSONRenderer, AdminRenderer, BrowsableAPIRenderer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer, AdminRenderer, XLSXRenderer]
@@ -97,7 +87,7 @@ class PostViewSet(generics.ListCreateAPIView):
 
 
 class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):    
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [ModelPermissions]
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     lookup_field = 'sid'
