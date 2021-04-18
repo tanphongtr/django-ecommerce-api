@@ -19,14 +19,17 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
 
-from .auth import AuthViewSet
-from .post import PostViewSet, PostDetailViewSet
+from .auth import AuthViewSet, UserSignUpViewSet, AuthLogoutViewSet
+from .post import PostViewSet, PostDetailViewSet, PostExportViewSet
 from .file import FileAPIView, FileDetailAPIView
 
 urlpatterns = [
-    path('auth/', AuthViewSet.as_view()),
+    path('auth/login', AuthViewSet.as_view()),
+    path('auth/signup/', UserSignUpViewSet.as_view()),
+    path('auth/logout/', AuthLogoutViewSet.as_view()),
     path('posts/', PostViewSet.as_view()),
     path('posts/<uuid:sid>/', PostDetailViewSet.as_view()),
+    path('posts/export/', PostExportViewSet.as_view({'get': 'list'})),
 
 
     path('files/', FileAPIView.as_view()),

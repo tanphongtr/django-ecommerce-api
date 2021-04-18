@@ -10,3 +10,5 @@ django-redis>=4.12.1
 # For heroku
 django-heroku
 gunicorn
+drf-renderer-xlsx
+pandas

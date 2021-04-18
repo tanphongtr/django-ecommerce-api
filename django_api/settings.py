@@ -191,14 +191,24 @@ REST_FRAMEWORK = {
 
     # 'DATE_FORMAT': '%s000.%f',
 
+    # Render https://www.django-rest-framework.org/api-guide/renderers/
+
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'drf_renderer_xlsx.renderers.XLSXRenderer',
+    ],
+
     # Authentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
     ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'EXCEPTION_HANDLER': 'app.utils.custom_exception_handler',
@@ -207,7 +217,18 @@ REST_FRAMEWORK = {
 
     # https://www.django-rest-framework.org/api-guide/metadata/
     # 'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
+
+    # https://www.django-rest-framework.org/api-guide/settings/#default_authentication_classes
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ]
 }
+
+# Set path('api-auth/', include('rest_framework.urls')) in urls.py
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
 
 
 # Swagger Settings
@@ -229,6 +250,9 @@ SWAGGER_SETTINGS = {
     'SUPPORTED_SUBMIT_METHODS': ['get', 'post', 'put', 'delete', 'patch'],
     'OPERATIONS_SORTER': 'alpha',
     'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        },
         'api_key': {
             'type': 'apiKey',
             'name': 'Authorization',
@@ -285,7 +309,7 @@ LANGUAGES = [
 #     }
 # }
 
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache" # Lỗi admin re-login khi reloading code
 # SESSION_CACHE_ALIAS = "default"
 
 
@@ -308,7 +332,7 @@ handler404 = custom404
 
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-AUTH_USER_MODEL
 
-AUTH_USER_MODEL = 'app.User'
+# AUTH_USER_MODEL = 'app.User'
 
 
 # Email
@@ -327,3 +351,4 @@ DEFAULT_FROM_EMAIL = 'default from email'
 
 import django_heroku
 django_heroku.settings(locals())
+APPEND_SLASH = True

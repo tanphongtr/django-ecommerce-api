@@ -61,9 +61,10 @@ schema_view = get_schema_view(
 # )
 from django.views.debug import default_urlconf
 
-
 urlpatterns = [
     path('', Unauthorized),
+    path('auth/', include('rest_framework.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     # path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # path('docs/v1/', v1_schema_view.with_ui('swagger',

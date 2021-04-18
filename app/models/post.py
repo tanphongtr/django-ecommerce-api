@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
-from app.models import User
-# from django.contrib.auth.models import User
+# from app.models import User
+from django.contrib.auth.models import User
 
 class Post(models.Model):
     sid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
@@ -16,6 +16,6 @@ class Post(models.Model):
         db_table = 'posts'
 
     #Override
-    def delete(self, using=None, keep_parents=False):
-        self.title='deleted 003'
-        return super().save()
+    # def delete(self, using=None, keep_parents=False):
+    #     self.title='deleted 003'
+    #     return super().save()
