@@ -91,3 +91,7 @@ source /var/www/scripts/xxx.sql
 Error: Cannot run more than 1 Free size dynos.
 Fix: https://stackoverflow.com/questions/34727605/heroku-cannot-run-more-than-1-free-size-dynos
 ```
+
+## Celery
+celery -A proj worker -l INFO
+python3 -m celery -A django_api worker -l info

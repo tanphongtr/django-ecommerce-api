@@ -34,7 +34,47 @@ class Http401(HttpResponse):
     def __init__(self):
         super().__init__('401 Unauthorized', status=401)
 
-def Unauthorized(request):
-    return HttpResponse('Unauthorized', status=403)
+
+from django.shortcuts import render
+
+def Homepage(request):
+    return render(request, 'test.html')
+
+# def Unauthorized(request):
+#     from app.tasks import sleepy, send_mail_task
+
+#     result = send_mail_task.delay()
+
+#     print(result.task_id)
+#     # print(result.ready())
+#     return HttpResponse('Unauthorized ' + result.task_id, status=403)
 
 from django.contrib.auth.models import User
+
+
+def StatusCelery(request):
+    id = request.GET['id']
+    from celery.result import AsyncResult
+    res = AsyncResult(id)
+    # res.ready()
+
+    print('res.ready()', res.ready())
+
+    print('res.info', res.info)
+    print('res.status', res.status)
+    print('res.state', res.state)
+
+    return HttpResponse('Trang thai', status=403)
+
+
+def SetCookie(request):
+    res = HttpResponse('DONE', status=200)
+    from random import random
+    # res.delete_cookie('token')
+    token = random()
+    res.set_cookie('token', token)
+    return res
+
+def GetCookie(request):
+    cookie = request.COOKIES
+    return HttpResponse(f'GET COOKE {cookie}', status=200)

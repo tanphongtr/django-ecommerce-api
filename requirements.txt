@@ -8,3 +8,6 @@ redis>=3.5.3
 django-redis>=4.12.1
 drf-renderer-xlsx
 pandas
+django-celery-beat
+
+channels>=3.0.3
