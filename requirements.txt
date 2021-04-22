@@ -12,3 +12,6 @@ django-heroku
 gunicorn
 drf-renderer-xlsx
 pandas
+django-celery-beat
+
+channels>=3.0.3

@@ -21,7 +21,7 @@ from rest_framework import permissions
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.schemas import get_schema_view as get_schema_views
-from .views import file_downloading, Unauthorized
+from .views import file_downloading, Homepage, StatusCelery, SetCookie, GetCookie
 from django.conf.urls.i18n import i18n_patterns
 
 schema_view = get_schema_view(
@@ -62,8 +62,11 @@ schema_view = get_schema_view(
 from django.views.debug import default_urlconf
 
 urlpatterns = [
-    path('', Unauthorized),
+    path('', Homepage),
     path('auth/', include('rest_framework.urls')),
+    path('status/', StatusCelery),
+    path('setcookie/', SetCookie),
+    path('getcookie/', GetCookie),
     path('accounts/', include('django.contrib.auth.urls')),
     # path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

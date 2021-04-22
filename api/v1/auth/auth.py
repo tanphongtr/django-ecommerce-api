@@ -18,6 +18,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, DjangoMo
 
 
 class AuthViewSet(generics.CreateAPIView):
+    permission_classes = []
     serializer_class = AuthTokenSerializer
 
     # @swagger_auto_schema(
@@ -38,12 +39,16 @@ class AuthViewSet(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response(
+        res = Response(
             {
                 'token': token.key,
                 'user': user.username
             }
         )
+
+        res['Access-Control-Allow-Origin'] = '*'
+
+        return res
     pass
 
 

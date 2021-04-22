@@ -39,7 +39,7 @@ class PostViewSet(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [ModelPermissions]
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
     from rest_framework.renderers import JSONRenderer, AdminRenderer, BrowsableAPIRenderer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer, AdminRenderer, XLSXRenderer]
 

@@ -28,7 +28,7 @@ SECRET_KEY = 'vn5iga)cc=i6n$w&zz45u)$@(#c&oal%77w77b8y0b)bs1o#t6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS += [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',  # swagger
+    # 'django_celery_beat', # https://github.com/celery/django-celery-beat
     'app',
     'api',
 ]
@@ -70,8 +71,9 @@ MIDDLEWARE += [
     # DataFlair #Caching Middleware
 
     # Cache
-    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware', # Lỗi đăng nhập đăng xuất Rest Framework
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # https://github.com/adamchainz/django-cors-headers
 ]
 
 ROOT_URLCONF = 'django_api.urls'
@@ -79,7 +81,8 @@ ROOT_URLCONF = 'django_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [], # Default
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # {root_project}\templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -200,12 +203,12 @@ REST_FRAMEWORK = {
     ],
 
     # Authentication
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
-    ],
+    # ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -221,9 +224,15 @@ REST_FRAMEWORK = {
     # https://www.django-rest-framework.org/api-guide/settings/#default_authentication_classes
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
-    ]
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
 }
+
+
+
 
 # Set path('api-auth/', include('rest_framework.urls')) in urls.py
 
@@ -335,7 +344,7 @@ handler404 = custom404
 # AUTH_USER_MODEL = 'app.User'
 
 
-# Email
+# Email configuration
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-EMAIL_BACKEND
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -351,4 +360,24 @@ DEFAULT_FROM_EMAIL = 'default from email'
 
 import django_heroku
 django_heroku.settings(locals())
-APPEND_SLASH = True
+
+APPEND_SLASH = True  # dấu / cuối URL
+
+# Djano Cors Header configuration
+# https://github.com/adamchainz/django-cors-headers
+
+CORS_ALLOWED_ORIGINS = [
+    # "https://example.com",
+    # "https://sub.example.com",
+    # "http://localhost:8080",
+    "http://localhost:3000",
+    # "http://127.0.0.1:9000"
+]
+
+# Celery configuration
+# https://docs.celeryproject.org/en/stable/userguide/configuration.html
+
+CELERY_BROKER_URL = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ':6379/1'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ':6379/1'
