@@ -377,7 +377,7 @@ CORS_ALLOWED_ORIGINS = [
 # Celery configuration
 # https://docs.celeryproject.org/en/stable/userguide/configuration.html
 
-CELERY_BROKER_URL = ':pce43805469edf62c5f0b1e116c51f706d740b990019fdd6aa25178e3f65e4c15@ec2-18-215-9-210.compute-1.amazonaws.com:28040'
+CELERY_BROKER_URL = 'redis://:pce43805469edf62c5f0b1e116c51f706d740b990019fdd6aa25178e3f65e4c15@ec2-18-215-9-210.compute-1.amazonaws.com:28040'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = ':pce43805469edf62c5f0b1e116c51f706d740b990019fdd6aa25178e3f65e4c15@ec2-18-215-9-210.compute-1.amazonaws.com:28040'
+CELERY_RESULT_BACKEND = 'redis://:pce43805469edf62c5f0b1e116c51f706d740b990019fdd6aa25178e3f65e4c15@ec2-18-215-9-210.compute-1.amazonaws.com:28040'
