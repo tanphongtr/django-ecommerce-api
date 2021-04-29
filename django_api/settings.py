@@ -344,8 +344,13 @@ def custom404(request, exception=None):
         'error': 'The resource was not found'
     })
 
+# https://docs.djangoproject.com/en/3.2/topics/http/views/#customizing-error-views
 
 handler404 = custom404
+handler500 = None
+handler403 = None
+handler400 = None
+
 
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-AUTH_USER_MODEL
 
@@ -384,3 +389,7 @@ CELERY_BROKER_URL = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ':6379/1'
+
+# One-time Password config
+
+OTP_TIMEOUT = 15

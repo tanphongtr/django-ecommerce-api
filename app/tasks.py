@@ -22,3 +22,7 @@ def send_mail_task():
 
     print('==============================')
     return None
+
+@shared_task
+def create_onetime_password():
+    pass

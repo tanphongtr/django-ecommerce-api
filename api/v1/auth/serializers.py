@@ -143,3 +143,7 @@ class AuthForgotPasswordSerializer(serializers.Serializer):
             fail_silently=False,
         )
         return value
+
+
+class AuthLogoutSerializer(serializers.Serializer):
+    pass

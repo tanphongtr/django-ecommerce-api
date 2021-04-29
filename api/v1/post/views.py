@@ -38,11 +38,10 @@ class StandardPagination(PageNumberPagination):
 class PostViewSet(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [ModelPermissions]
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    # permission_classes = [ModelPermissions]
+    # authentication_classes = [TokenAuthentication, SessionAuthentication]
     from rest_framework.renderers import JSONRenderer, AdminRenderer, BrowsableAPIRenderer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer, AdminRenderer, XLSXRenderer]
-
     @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
@@ -58,10 +57,14 @@ class PostViewSet(generics.ListCreateAPIView):
         operation_summary='',
     )
     def get(self, request, *args, **kwargs):
-        print(request.user)
-        print('========================================', request.user.id)
-        print('========================================', request.META.get('HTTP_AUTHORIZATION', b''))
-        print('========================================', request.COOKIES.get('test'))
+        # print(request.user)
+        # print('========================================', request.user.id)
+        # print('========================================', request.META.get('HTTP_AUTHORIZATION', b''))
+        # print('========================================', request.COOKIES.get('test'))
+
+        from app.utils.onetime_password import OnetimePassword
+
+        otp = OnetimePassword().send_to_mail(mail='tanphongtr@gmail.com')
 
         return super().get(request, *args, **kwargs)
 
