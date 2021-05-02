@@ -49,7 +49,6 @@ INSTALLED_APPS += [
     'rest_framework.authtoken',
     'drf_yasg',  # swagger
     # 'django_celery_beat', # https://github.com/celery/django-celery-beat
-    'debug_toolbar',
     'graphene_django',
     'app',
     'api',
@@ -76,7 +75,6 @@ MIDDLEWARE += [
     # 'django.middleware.cache.UpdateCacheMiddleware', # Lỗi đăng nhập đăng xuất Rest Framework
     'django.middleware.cache.FetchFromCacheMiddleware',
     'corsheaders.middleware.CorsMiddleware', # https://github.com/adamchainz/django-cors-headers/
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'django_api.urls'
@@ -402,24 +400,3 @@ OTP_TIMEOUT = 15
 GRAPHENE = {
     "SCHEMA": "app.schema.schema"
 }
-
-DEBUG_TOOLBAR_PANELS = [
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.logging.LoggingPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel'
-]
-
-INTERNAL_IPS = [
-    # ...
-    '127.0.0.1',
-    # ...
-]
