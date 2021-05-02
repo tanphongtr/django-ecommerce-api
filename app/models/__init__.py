@@ -1,6 +1,9 @@
-from ._custom_field import *
-from .user import *
-from .employee import *
+# from django.contrib.auth.models import User
+# from .user import *
+from .custom_field import *
+
+# from .employee import *
 from .post import *
 from .file import *
-
+from .json import *
+from .test import *

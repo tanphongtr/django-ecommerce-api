@@ -28,7 +28,7 @@ SECRET_KEY = 'vn5iga)cc=i6n$w&zz45u)$@(#c&oal%77w77b8y0b)bs1o#t6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,6 +48,9 @@ INSTALLED_APPS += [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',  # swagger
+    # 'django_celery_beat', # https://github.com/celery/django-celery-beat
+    'debug_toolbar',
+    'graphene_django',
     'app',
     'api',
 ]
@@ -63,14 +66,17 @@ MIDDLEWARE = [
 ]
 
 MIDDLEWARE += [
-    # da ngon ngu
+    # How the language is determined
+    # https://www.django-rest-framework.org/topics/internationalization/#how-the-language-is-determined
     'django.middleware.locale.LocaleMiddleware',
     'drf_yasg.middleware.SwaggerExceptionMiddleware',
     # DataFlair #Caching Middleware
 
     # Cache
-    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware', # Lỗi đăng nhập đăng xuất Rest Framework
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # https://github.com/adamchainz/django-cors-headers/
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'django_api.urls'
@@ -78,7 +84,8 @@ ROOT_URLCONF = 'django_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [], # Default
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # {root_project}\templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -164,18 +171,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 STATIC_ROOT = "var/www/static/"
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'django_api', 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'app.models.UnsignedAutoField' # django.db.models.BigAutoField
+DEFAULT_AUTO_FIELD = 'app.models.UnsignedAutoField'  # django.db.models.BigAutoField
 
 
 # REST framework's Settings
@@ -198,14 +205,24 @@ REST_FRAMEWORK = {
 
     # 'DATE_FORMAT': '%s000.%f',
 
-    # Authentication
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    # Render https://www.django-rest-framework.org/api-guide/renderers/
+
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'drf_renderer_xlsx.renderers.XLSXRenderer',
     ],
+
+    # Authentication
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    # ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # Lỗi cảnh báo: UnorderedObjectListWarning
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'EXCEPTION_HANDLER': 'app.utils.custom_exception_handler',
@@ -214,7 +231,24 @@ REST_FRAMEWORK = {
 
     # https://www.django-rest-framework.org/api-guide/metadata/
     # 'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
+
+    # https://www.django-rest-framework.org/api-guide/settings/#default_authentication_classes
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ],
 }
+
+
+
+
+# Set path('api-auth/', include('rest_framework.urls')) in urls.py
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
 
 
 # Swagger Settings
@@ -236,6 +270,9 @@ SWAGGER_SETTINGS = {
     'SUPPORTED_SUBMIT_METHODS': ['get', 'post', 'put', 'delete', 'patch'],
     'OPERATIONS_SORTER': 'alpha',
     'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        },
         'api_key': {
             'type': 'apiKey',
             'name': 'Authorization',
@@ -265,6 +302,7 @@ LANGUAGES = [
     ('de', _('German')),
     ('en', _('English')),
     ('vi-vn', _('Vietnamese')),
+    ('ja-JP', _('Japanese')),
 ]
 
 # CACHES = {
@@ -291,7 +329,7 @@ LANGUAGES = [
 #     }
 # }
 
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache" # Lỗi admin re-login khi reloading code
 # SESSION_CACHE_ALIAS = "default"
 
 
@@ -309,15 +347,20 @@ def custom404(request, exception=None):
         'error': 'The resource was not found'
     })
 
+# https://docs.djangoproject.com/en/3.2/topics/http/views/#customizing-error-views
 
 handler404 = custom404
+handler500 = None
+handler403 = None
+handler400 = None
+
 
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-AUTH_USER_MODEL
 
-AUTH_USER_MODEL = 'app.User'
+# AUTH_USER_MODEL = 'app.User'
 
 
-# Email
+# Email configuration
 # https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-EMAIL_BACKEND
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -327,3 +370,56 @@ EMAIL_HOST_PASSWORD = 'ucnditvoiovkzawu'  # past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'default from email'
+
+
+APPEND_SLASH = True  # dấu / cuối URL
+
+# Djano Cors Header configuration
+# https://github.com/adamchainz/django-cors-headers
+
+CORS_ALLOWED_ORIGINS = [
+    # "https://example.com",
+    # "https://sub.example.com",
+    # "http://localhost:8080",
+    "http://localhost:3000",
+    # "http://127.0.0.1:9000"
+]
+
+# Celery configuration
+# https://docs.celeryproject.org/en/stable/userguide/configuration.html
+
+CELERY_BROKER_URL = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ':6379/1'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ':6379/1'
+
+# One-time Password config
+
+OTP_TIMEOUT = 15
+
+# https://docs.graphene-python.org/
+
+GRAPHENE = {
+    "SCHEMA": "app.schema.schema"
+}
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel'
+]
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]

@@ -29,8 +29,8 @@ def exception_handler(exc, context):
             headers['Retry-After'] = '%d' % exc.wait
 
         if isinstance(exc.detail, (list, dict)):
-            print('==========================================================>')
-            print(exc)
+            # print('==========================================================>')
+            # print(exc)
             data = exc.detail
         else:
             data = {'detail': exc.detail}
@@ -45,9 +45,9 @@ def custom_exception_handler(exc, context):
     # to get the standard error response.
     response = exception_handler(exc, context)
 
-    print(exc, context)
-    print('======================================')
-    print(context)
+    # print(exc, context)
+    # print('======================================')
+    # print(context)
 
     # Now add the HTTP status code to the response.
     if response is not None:
