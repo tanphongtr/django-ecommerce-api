@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import debug_toolbar
+from django.views.debug import default_urlconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from drf_yasg.views import get_schema_view
@@ -23,6 +25,7 @@ from django.conf.urls.static import static
 from rest_framework.schemas import get_schema_view as get_schema_views
 from .views import file_downloading, Homepage, StatusCelery, SetCookie, GetCookie
 from django.conf.urls.i18n import i18n_patterns
+from graphene_django.views import GraphQLView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -33,7 +36,7 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
         validators=['ssv', 'flex'],
-        
+
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -50,7 +53,7 @@ schema_view = get_schema_view(
 #         contact=openapi.Contact(email="contact@snippets.local"),
 #         license=openapi.License(name="BSD License"),
 #         validators=['ssv', 'flex'],
-        
+
 #     ),
 #     public=True,
 #     permission_classes=(permissions.AllowAny,),
@@ -59,9 +62,8 @@ schema_view = get_schema_view(
 #         path('api/', include(v1_urlpatterns)),
 #     ],
 # )
-from django.views.debug import default_urlconf
-
 urlpatterns = [
+    path("api/graphql/", GraphQLView.as_view(graphiql=True)),
     path('', Homepage),
     path('auth/', include('rest_framework.urls')),
     path('status/', StatusCelery),
@@ -69,14 +71,19 @@ urlpatterns = [
     path('getcookie/', GetCookie),
     path('accounts/', include('django.contrib.auth.urls')),
     # path('admin/', admin.site.urls),
-    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('docs/', schema_view.with_ui('swagger',
+         cache_timeout=0), name='schema-swagger-ui'),
     # path('docs/v1/', v1_schema_view.with_ui('swagger',
     #      cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('redoc/', schema_view.with_ui('redoc',
+         cache_timeout=0), name='schema-redoc'),
     # path('api-auth/', include('rest_framework.urls'))
     path('api/', include('api.urls')),
     path('download/<uuid:sid>/', file_downloading),
-] # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files
+    path('__debug__/', include(debug_toolbar.urls)),
+] 
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
 )

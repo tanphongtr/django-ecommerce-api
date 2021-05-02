@@ -3,11 +3,20 @@ import uuid
 # from app.models import User
 from django.contrib.auth.models import User
 
+
+PENDING = 0
+DONE = 1
+
 class Post(models.Model):
+    STATUS_CHOICES = (
+        (PENDING, 'Pending'),
+        (DONE, 'Done'),
+    )
     sid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255,)
     content = models.TextField(max_length=1000, blank=True, default='', )
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, )
+    status = models.BooleanField(choices=STATUS_CHOICES, default=PENDING, )
     update_at = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now=True)
 

@@ -49,6 +49,8 @@ INSTALLED_APPS += [
     'rest_framework.authtoken',
     'drf_yasg',  # swagger
     # 'django_celery_beat', # https://github.com/celery/django-celery-beat
+    'debug_toolbar',
+    'graphene_django',
     'app',
     'api',
 ]
@@ -73,7 +75,8 @@ MIDDLEWARE += [
     # Cache
     # 'django.middleware.cache.UpdateCacheMiddleware', # Lỗi đăng nhập đăng xuất Rest Framework
     'django.middleware.cache.FetchFromCacheMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # https://github.com/adamchainz/django-cors-headers
+    'corsheaders.middleware.CorsMiddleware', # https://github.com/adamchainz/django-cors-headers/
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'django_api.urls'
@@ -168,11 +171,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 STATIC_ROOT = "var/www/static/"
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'django_api', 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 
@@ -218,8 +221,8 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.TokenAuthentication',
     # ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # Lỗi cảnh báo: UnorderedObjectListWarning
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'EXCEPTION_HANDLER': 'app.utils.custom_exception_handler',
@@ -234,9 +237,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ],
 }
 
 
@@ -393,3 +396,30 @@ CELERY_RESULT_BACKEND = 'redis://' + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.
 # One-time Password config
 
 OTP_TIMEOUT = 15
+
+# https://docs.graphene-python.org/
+
+GRAPHENE = {
+    "SCHEMA": "app.schema.schema"
+}
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel'
+]
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]

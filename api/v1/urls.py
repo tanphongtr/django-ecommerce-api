@@ -22,6 +22,9 @@ from django.conf import settings
 from .auth import AuthViewSet, UserSignUpViewSet, AuthLogoutViewSet, AuthForgotPasswordViewSet
 from .post import PostViewSet, PostDetailViewSet, PostExportViewSet
 from .file import FileAPIView, FileDetailAPIView
+from .admin_log import AdminLogAPIView
+from .user import UserAPIView, UserDetailAPIView
+from .json import JsonAPIView
 
 urlpatterns = [
     path('auth/login/', AuthViewSet.as_view()),
@@ -29,11 +32,15 @@ urlpatterns = [
     path('auth/logout/', AuthLogoutViewSet.as_view()),
     path('auth/forgotpassword/', AuthForgotPasswordViewSet.as_view()),
     path('posts/', PostViewSet.as_view()),
+    path('jsons/', JsonAPIView.as_view()),
     path('posts/<uuid:sid>/', PostDetailViewSet.as_view()),
     path('posts/export/', PostExportViewSet.as_view({'get': 'list'})),
 
 
     path('files/', FileAPIView.as_view()),
     path('files/<uuid:sid>/', FileDetailAPIView.as_view()),
+    path('admin-logs/', AdminLogAPIView.as_view()),
+    path('users/', UserAPIView.as_view()),
+    path('users/<int:id>/', UserDetailAPIView.as_view(), name='user_detail'),
     # path('test/', Test.as_view()),
 ] 

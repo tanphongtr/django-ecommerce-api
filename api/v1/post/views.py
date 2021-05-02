@@ -1,3 +1,5 @@
+from drf_renderer_xlsx.mixins import XLSXFileMixin
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import status, generics
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -28,6 +30,8 @@ from rest_framework.authentication import BaseAuthentication, TokenAuthenticatio
 from drf_renderer_xlsx.renderers import XLSXRenderer
 
 from app.utils.permissons import ModelPermissions
+from rest_framework.parsers import FormParser
+
 
 class StandardPagination(PageNumberPagination):
     page_size = 2
@@ -35,13 +39,17 @@ class StandardPagination(PageNumberPagination):
     max_page_size = 10
     # ordering = '-created_at'
 
+
 class PostViewSet(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     # permission_classes = [ModelPermissions]
     # authentication_classes = [TokenAuthentication, SessionAuthentication]
     from rest_framework.renderers import JSONRenderer, AdminRenderer, BrowsableAPIRenderer
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer, AdminRenderer, XLSXRenderer]
+    renderer_classes = [JSONRenderer,
+                        BrowsableAPIRenderer, AdminRenderer, XLSXRenderer]
+    parser_classes = [FormParser,]
+
     @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
@@ -64,7 +72,7 @@ class PostViewSet(generics.ListCreateAPIView):
 
         from app.utils.onetime_password import OnetimePassword
 
-        otp = OnetimePassword().send_to_mail(mail='tanphongtr@gmail.com')
+        # otp = OnetimePassword().send_to_mail(mail='tanphongtr@gmail.com')
 
         return super().get(request, *args, **kwargs)
 
@@ -84,12 +92,12 @@ class PostViewSet(generics.ListCreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         print(request.user.id)
-        print("=======================", request.user.get_all_permissions() )
+        print("=======================", request.user.get_all_permissions())
 
         return super().post(request, *args, **kwargs)
 
 
-class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):    
+class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [ModelPermissions]
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
@@ -113,7 +121,7 @@ class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
     )
     def get(self, request, *args, **kwargs):
         print("===============================================", request.user.id)
-        print("=======================", request.user.get_user_permissions() )
+        print("=======================", request.user.get_user_permissions())
 
         return super().get(request, *args, **kwargs)
 
@@ -151,7 +159,6 @@ class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
 
-
     @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
@@ -169,10 +176,6 @@ class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
 
-
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from drf_renderer_xlsx.mixins import XLSXFileMixin
-from drf_renderer_xlsx.renderers import XLSXRenderer
 
 class PostExportViewSet(XLSXFileMixin, ReadOnlyModelViewSet):
     queryset = Post.objects.all()

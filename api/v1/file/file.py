@@ -20,6 +20,7 @@ from rest_framework.pagination import PageNumberPagination as _PageNumberPaginat
 
 class PageNumberPagination(_PageNumberPagination):
     page_size_query_param = 'page_size'
+    page_size = 10
 
 class LocaleMiddleware(_):
     def process_request(self, request):
@@ -39,8 +40,8 @@ class LocaleMiddleware(_):
 
 
 class FileAPIView(generics.ListCreateAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [BasicAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     queryset = File.objects.all()
     serializer_class = FileSerializer
