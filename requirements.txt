@@ -13,3 +13,4 @@ django-celery-beat
 channels>=3.0.3
 django-cors-headers>=3.7.0
 django-debug-toolbar>=3.2.1
+graphene_django
