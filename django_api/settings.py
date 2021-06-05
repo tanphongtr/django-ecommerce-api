@@ -45,13 +45,21 @@ INSTALLED_APPS = [
 # Application startapp
 
 INSTALLED_APPS += [
+    'app',
+    'api',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',  # swagger
     # 'django_celery_beat', # https://github.com/celery/django-celery-beat
     'graphene_django',
-    'app',
-    'api',
+    'django_filters',
+    'import_export',
+
+    # https://django-constance.readthedocs.io/en/latest/
+    'constance',
+    'constance.backends.database',
+    'tinymce',
+
 ]
 
 MIDDLEWARE = [
@@ -68,12 +76,14 @@ MIDDLEWARE += [
     # How the language is determined
     # https://www.django-rest-framework.org/topics/internationalization/#how-the-language-is-determined
     'django.middleware.locale.LocaleMiddleware',
+    
     'drf_yasg.middleware.SwaggerExceptionMiddleware',
     # DataFlair #Caching Middleware
 
     # Cache
-    # 'django.middleware.cache.UpdateCacheMiddleware', # Lỗi đăng nhập đăng xuất Rest Framework
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware', # Lỗi đăng nhập đăng xuất Rest Framework, (không phải lỗi, do bị dính cache)
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
+
     'corsheaders.middleware.CorsMiddleware', # https://github.com/adamchainz/django-cors-headers/
 ]
 
@@ -234,13 +244,22 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     # ],
+
+    # https://www.django-rest-framework.org/api-guide/throttling/ (giới hạn số lần request/time)
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # ],
+    # 'DEFAULT_THROTTLE_RATES': {
+    #     'anon': '5/second',
+    #     'user': '1000/day'
+    # }
 }
-
-
 
 
 # Set path('api-auth/', include('rest_framework.urls')) in urls.py
@@ -312,20 +331,20 @@ LANGUAGES = [
 # }
 
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://" + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ":6379/1",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             "SOCKET_CONNECT_TIMEOUT": 5,  # seconds
-#             "SOCKET_TIMEOUT": 5,  # seconds
-#         },
-#         "KEY_PREFIX": "example",
-#         "TIMEOUT": 5,
-#         "TTL": 5,
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://" + os.getenv('REDIS_CONTAINER_NAME', '127.0.0.1') + ":6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SOCKET_CONNECT_TIMEOUT": 5,  # seconds
+            "SOCKET_TIMEOUT": 5,  # seconds
+        },
+        "KEY_PREFIX": "redis_cache",
+        "TIMEOUT": 5,
+        "TTL": 5,
+    }
+}
 
 # SESSION_ENGINE = "django.contrib.sessions.backends.cache" # Lỗi admin re-login khi reloading code
 # SESSION_CACHE_ALIAS = "default"
@@ -399,4 +418,73 @@ OTP_TIMEOUT = 15
 
 GRAPHENE = {
     "SCHEMA": "app.schema.schema"
+}
+
+CONSTANCE_CONFIG = {
+    'THE_ANSWER': ('', 'Answer to the Ultimate Question of Life, '
+                       'The Universe, and Everything'),
+    'SITE_NAME' : (42, 'Answer to the Ultimate Question of Life, '
+                       'The Universe, and Everything'),
+    'SITE_DESCRIPTION' : (42, 'Answer to the Ultimate Question of Life, '
+                       'The Universe, and Everything'),
+    'THEME' : (42, 'Answer to the Ultimate Question of Life, '
+                       'The Universe, and Everything'),
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'General Options': {
+        'fields': ('SITE_NAME', 'SITE_DESCRIPTION'),
+        'collapse': True
+    },
+    'Theme Options': ('THEME',),
+    'Test Options': ('THE_ANSWER',),
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_DATABASE_CACHE_BACKEND = 'default'
+
+# https://django-tinymce.readthedocs.io/
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "320px",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+}
+
+
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }

@@ -6,10 +6,17 @@ drf-yasg>=1.20.0
 Celery>=5.0.5
 redis>=3.5.3
 django-redis>=4.12.1
-drf-renderer-xlsx
-pandas
-django-celery-beat
+drf-renderer-xlsx>=0.4.0
+pandas>=1.2.4
+django-celery-beat>=2.2.0
 
-channels>=3.0.3
+channels>=3.0.3 # Web socket
 django-cors-headers>=3.7.0
-graphene_django
+graphene_django>=2.15.0
+tablib>=3.0.0
+django-constance>=2.8.0
+django-constance[database] # https://django-constance.readthedocs.io/
+django-tinymce=3.3.0 # https://django-tinymce.readthedocs.io/
+pyjwt>=2.1.0 # https://pyjwt.readthedocs.io/ chua dung den
+
+djangorestframework-simplejwt

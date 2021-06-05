@@ -25,6 +25,12 @@ from rest_framework.schemas import get_schema_view as get_schema_views
 from .views import file_downloading, Homepage, StatusCelery, SetCookie, GetCookie
 from django.conf.urls.i18n import i18n_patterns
 from graphene_django.views import GraphQLView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -69,7 +75,7 @@ urlpatterns = [
     path('setcookie/', SetCookie),
     path('getcookie/', GetCookie),
     path('accounts/', include('django.contrib.auth.urls')),
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('docs/', schema_view.with_ui('swagger',
          cache_timeout=0), name='schema-swagger-ui'),
     # path('docs/v1/', v1_schema_view.with_ui('swagger',
@@ -79,9 +85,23 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls'))
     path('api/', include('api.urls')),
     path('download/<uuid:sid>/', file_downloading),
-] 
+
+    path('tinymce/', include('tinymce.urls')),
+
+    path('openapi', get_schema_views(
+        title="Your Project",
+        description="API for all things …",
+        version="1.0.0",
+        permission_classes=(permissions.AllowAny,)
+
+    ), name='openapi-schema'),
+
+    path('api/auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # For URL media / files
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += i18n_patterns(
-    path('admin/', admin.site.urls),
-)
+# urlpatterns += i18n_patterns(
+#     path('admin/', admin.site.urls),
+# )
