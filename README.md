@@ -95,3 +95,50 @@ Fix: https://stackoverflow.com/questions/34727605/heroku-cannot-run-more-than-1-
 ## Celery
 celery -A proj worker -l INFO
 python3 -m celery -A django_api worker -l info
+
+## Code import
+```py
+import tablib
+from import_export import resources
+from app.models import Post
+import pandas as pd
+from import_export import resources, fields, widgets
+from import_export.widgets import ForeignKeyWidget
+from django.contrib.auth.models import User
+
+
+class PostResource(resources.ModelResource):
+    user = fields.Field(
+        column_name='user',
+        attribute='user',
+        widget=ForeignKeyWidget(User, 'username'))
+    class Meta:
+        model = Post
+        
+
+xlsx = pd.ExcelFile("post.xlsx")
+df = pd.read_excel(xlsx)
+data = df.values.tolist()
+post_resource = resources.modelresource_factory(model=Post, resource_class=PostResource)()
+dataset = tablib.Dataset(*data)
+dataset.headers = ['title', 'content', 'user','status','update_at','created_at']
+
+result = post_resource.import_data(dataset, dry_run=True)
+print(result.has_errors())
+
+result = post_resource.import_data(dataset, dry_run=False)
+
+```
+
+
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction
+
+```
+$ pip install -r requirements.txt
+```
+
+Get giá trị con người có thể đọc
+https://stackoverflow.com/questions/28945327/django-rest-framework-with-choicefield
+
+
+python3 -m pip install --upgrade pip

@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from api.v1.user.views import UserPermissionsAPIView
+from api.v1.test.views import AlbumAPIView, TrackAPIView, TrackDetailAPIView
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
@@ -42,5 +44,9 @@ urlpatterns = [
     path('admin-logs/', AdminLogAPIView.as_view()),
     path('users/', UserAPIView.as_view()),
     path('users/<int:id>/', UserDetailAPIView.as_view(), name='user_detail'),
+    path('albums/', AlbumAPIView.as_view()),
+    path('tracks/', TrackAPIView.as_view()),
+    path('tracks/<int:id>/', TrackDetailAPIView.as_view(), name='track-detail'),
+    path('users/permissions/', UserPermissionsAPIView.as_view(), name='track-detail'),
     # path('test/', Test.as_view()),
 ] 
