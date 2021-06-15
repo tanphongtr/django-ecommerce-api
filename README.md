@@ -136,3 +136,9 @@ https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction
 ```
 $ pip install -r requirements.txt
 ```
+
+Get giá trị con người có thể đọc
+https://stackoverflow.com/questions/28945327/django-rest-framework-with-choicefield
+
+
+python3 -m pip install --upgrade pip

@@ -92,6 +92,8 @@ class PostViewSet(generics.ListCreateAPIView):
     )
 
     def get(self, request, *args, **kwargs):
+        from constance import config
+        print(config.THEME)
         print('---', get_cache_key(request=request))
 
         print(request.user)
@@ -152,8 +154,8 @@ class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
         operation_summary='',
     )
     def get(self, request, *args, **kwargs):
-        print("===============================================", request.user.id)
-        print("=======================", request.user.get_user_permissions())
+        print("="*10, request.user.id)
+        print("="*10, request.user.get_user_permissions())
 
         return super().get(request, *args, **kwargs)
 

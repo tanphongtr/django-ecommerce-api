@@ -4,7 +4,8 @@ from app import models
 from app.models import Post
 
 class PostSerializer(serializers.ModelSerializer):
-    status = serializers.ChoiceField(choices=Post.STATUS_CHOICES)
+    _status = serializers.CharField(source='get_status_display', read_only=True)
+    _user = serializers.CharField(source='user.username', read_only=True)
     class Meta:
         model = Post
         fields = '__all__'
