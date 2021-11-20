@@ -36,6 +36,22 @@ services:
             - mariadb
             - redis
 
+
+    app_celery:
+        container_name: ${_PREFIX}_${APP_CONTAINER_NAME}_celery
+        build: .
+        # command: celery -A ors_backend worker -B --scheduler django -l INFO
+        command: celery -A django_api worker -l info
+        restart: ${APP_CONTAINER_RESTART}
+        volumes:
+            - .:/app
+        env_file:
+            - .env
+        depends_on:
+            - mariadb
+            - redis
+
+
     mariadb:
         # Image Version: 1:10.5.9+maria~focal
         image: mariadb

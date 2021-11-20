@@ -142,3 +142,4 @@ migrations/
 
 # files
 files/
+volumes_mysql
