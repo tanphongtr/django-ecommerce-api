@@ -50,7 +50,7 @@ INSTALLED_APPS += [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',  # swagger
-    # 'django_celery_beat', # https://github.com/celery/django-celery-beat
+    'django_celery_beat', # https://github.com/celery/django-celery-beat
     'graphene_django',
     'django_filters',
     'import_export',

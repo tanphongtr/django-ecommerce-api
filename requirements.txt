@@ -23,3 +23,4 @@ djangorestframework-simplejwt>=4.7.1
 apscheduler>=3.7.0 # https://apscheduler.readthedocs.io/
 django-apscheduler>=0.5.2
 django-import-export
+# boto3 # Amazone S3

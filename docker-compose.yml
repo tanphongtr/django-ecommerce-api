@@ -41,7 +41,23 @@ services:
         container_name: ${_PREFIX}_${APP_CONTAINER_NAME}_celery
         build: .
         # command: celery -A ors_backend worker -B --scheduler django -l INFO
-        command: celery -A django_api worker -l info
+        
+        command: celery -A django_api worker --loglevel=info
+        restart: ${APP_CONTAINER_RESTART}
+        volumes:
+            - .:/app
+        env_file:
+            - .env
+        depends_on:
+            - mariadb
+            - redis
+
+    app_celery_beat:
+        container_name: ${_PREFIX}_${APP_CONTAINER_NAME}_celery_beat
+        build: .
+        # command: celery -A ors_backend worker -B --scheduler django -l INFO
+        
+        command: celery -A django_api beat -l info -S django
         restart: ${APP_CONTAINER_RESTART}
         volumes:
             - .:/app
