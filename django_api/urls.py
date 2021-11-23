@@ -68,8 +68,9 @@ schema_view = get_schema_view(
 #     ],
 # )
 urlpatterns = [
+    path("", default_urlconf),
     path("api/graphql/", GraphQLView.as_view(graphiql=True)),
-    path('', Homepage),
+    # path('', Homepage),
     path('auth/', include('rest_framework.urls')),
     path('status/', StatusCelery),
     path('setcookie/', SetCookie),

@@ -49,6 +49,7 @@ services:
         env_file:
             - .env
         depends_on:
+            - app
             - mariadb
             - redis
 
@@ -64,6 +65,7 @@ services:
         env_file:
             - .env
         depends_on:
+            - app
             - mariadb
             - redis
 
@@ -109,7 +111,12 @@ services:
         container_name: ${_PREFIX}_${REDIS_CONTAINER_NAME}
 
 
-networks: # Sử dụng network đã có sẵn
+# networks: # Sử dụng network đã có sẵn
+#     default:
+#         external:
+#             name: mysql_default
+
+networks:
     default:
-        external:
-            name: mysql_default
+        external: false
+        name: ${NETWORK}
