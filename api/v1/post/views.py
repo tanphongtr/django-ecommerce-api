@@ -33,7 +33,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, DjangoMo
 from rest_framework.authentication import BaseAuthentication, TokenAuthentication, SessionAuthentication, BasicAuthentication
 from drf_renderer_xlsx.renderers import XLSXRenderer
 
-from app.utils.permissons import ModelPermissions
+from app.utils.permissons import ModelPermissions, IsOwnerOrReadOnly
 from rest_framework.parsers import FormParser
 from rest_framework import filters
 import django_filters.rest_framework
@@ -55,7 +55,7 @@ class PostViewSet(generics.ListCreateAPIView):
     )
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [ModelPermissions]
+    permission_classes = [ModelPermissions , IsOwnerOrReadOnly]
     authentication_classes = [TokenAuthentication, SessionAuthentication, JWTAuthentication]
     from rest_framework.renderers import JSONRenderer, AdminRenderer, BrowsableAPIRenderer
     renderer_classes = [JSONRenderer,
@@ -132,7 +132,7 @@ class PostViewSet(generics.ListCreateAPIView):
 
 
 class PostDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [ModelPermissions]
+    permission_classes = [ModelPermissions, IsOwnerOrReadOnly]
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     lookup_field = 'sid'

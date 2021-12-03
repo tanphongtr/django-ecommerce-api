@@ -2,7 +2,7 @@ version: '3'
 
 services:
     app:
-        container_name: ${_PREFIX}_${APP_CONTAINER_NAME}
+        container_name: ${PREFIX}_${APP_CONTAINER_NAME}
         build: .        
         command: >
             sh -c "python manage.py makemigrations
@@ -38,7 +38,7 @@ services:
 
 
     app_celery:
-        container_name: ${_PREFIX}_${APP_CONTAINER_NAME}_celery
+        container_name: ${PREFIX}_${APP_CONTAINER_NAME}_celery
         build: .
         # command: celery -A ors_backend worker -B --scheduler django -l INFO
         
@@ -54,7 +54,7 @@ services:
             - redis
 
     app_celery_beat:
-        container_name: ${_PREFIX}_${APP_CONTAINER_NAME}_celery_beat
+        container_name: ${PREFIX}_${APP_CONTAINER_NAME}_celery_beat
         build: .
         # command: celery -A ors_backend worker -B --scheduler django -l INFO
         
@@ -73,7 +73,7 @@ services:
     mariadb:
         # Image Version: 1:10.5.9+maria~focal
         image: mariadb
-        container_name: ${_PREFIX}_${MARIADB_CONTAINER_NAME}
+        container_name: ${PREFIX}_${MARIADB_CONTAINER_NAME}
         ports:
             - ${MARIADB_PUBLIC_PORT}:${MARIADB_PORT}
         # command: --default-authentication-plugin=mysql_native_password
@@ -90,7 +90,7 @@ services:
     phpmyadmin:
         # Image Version: 5.1.0
         image: phpmyadmin/phpmyadmin
-        container_name: ${_PREFIX}_${PHPMYADMIN_CONTAINER_NAME}
+        container_name: ${PREFIX}_${PHPMYADMIN_CONTAINER_NAME}
         # links:
         #     - mariadb
         environment:
@@ -108,7 +108,7 @@ services:
     redis:
         # Image Version: 6.2.1
         image: "redis:alpine"
-        container_name: ${_PREFIX}_${REDIS_CONTAINER_NAME}
+        container_name: ${PREFIX}_${REDIS_CONTAINER_NAME}
 
 
 # networks: # Sử dụng network đã có sẵn
