@@ -27,6 +27,7 @@ from .file import FileAPIView, FileDetailAPIView
 from .admin_log import AdminLogAPIView
 from .user import UserAPIView, UserDetailAPIView
 from .json import JsonAPIView
+from .setting import SettingAPIView
 
 urlpatterns = [
     path('auth/login/', AuthViewSet.as_view()),
@@ -49,4 +50,6 @@ urlpatterns = [
     path('tracks/<int:id>/', TrackDetailAPIView.as_view(), name='track-detail'),
     path('users/permissions/', UserPermissionsAPIView.as_view(), name='track-detail'),
     # path('test/', Test.as_view()),
+
+    # path('settings/', SettingAPIView.as_view())
 ] 

@@ -37,8 +37,8 @@ services:
             - redis
 
 
-    app_celery:
-        container_name: ${PREFIX}_${APP_CONTAINER_NAME}_celery
+    app_celery_worker:
+        container_name: ${PREFIX}_${APP_CONTAINER_NAME}_celery_worker
         build: .
         # command: celery -A ors_backend worker -B --scheduler django -l INFO
         
@@ -86,6 +86,23 @@ services:
         volumes:
             - ./volumes_mysql:/var/lib/mysql
             - ./volumes_mysql/scripts:/var/www/scripts # Run: source /var/www/scripts/xxx.sql
+
+    mariadb2:
+        # Image Version: 1:10.5.9+maria~focal
+        image: mariadb
+        container_name: ${PREFIX}_${MARIADB_CONTAINER_NAME}_2
+        ports:
+            - 3308:3306
+        # command: --default-authentication-plugin=mysql_native_password
+        restart: ${MARIADB_CONTAINER_RESTART}
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+            # Auto Create DB
+            MYSQL_DATABASE: ${MARIADB_DATABASE}
+
+        volumes:
+            - ./volumes_mysql_2:/var/lib/mysql
+            - ./volumes_mysql_2/scripts:/var/www/scripts # Run: source /var/www/scripts/xxx.sql
     
     phpmyadmin:
         # Image Version: 5.1.0
@@ -106,16 +123,32 @@ services:
             - mariadb
 
     redis:
-        # Image Version: 6.2.1
-        image: "redis:alpine"
+        # Image Version: 6.2.6
+        image: "redis:6.2.6"
         container_name: ${PREFIX}_${REDIS_CONTAINER_NAME}
+        depends_on:
+            - mariadb
+
+    jupyter:
+        container_name: ${PREFIX}_jupyter
+        build: .
+        command: >
+            sh -c "jupyter notebook --allow-root --ip=0.0.0.0"
+        ports:
+            - ${JUPYTER_PUBLIC_PORT}:8888
+        env_file:
+            - .env
+        volumes:
+            - .:/app
+
+
 
 
 # networks: # Sử dụng network đã có sẵn
 #     default:
 #         external:
 #             name: mysql_default
-
+# https://docs.docker.com/compose/networking/
 networks:
     default:
         external: false

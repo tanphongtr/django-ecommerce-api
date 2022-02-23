@@ -17,7 +17,7 @@ from django.views.debug import default_urlconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from drf_yasg import openapi, generators
 from rest_framework import permissions
 from django.conf import settings
 from django.conf.urls.static import static
@@ -31,6 +31,12 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+class BothHttpAndHttpsSchemaGenerator(generators.OpenAPISchemaGenerator):
+    def get_schema(self, request=None, public=False):
+        schema = super().get_schema(request, public)
+        schema.schemes = ["https", "http"]
+        return schema
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -41,11 +47,11 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
         validators=['ssv', 'flex'],
-
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
     # url="https://localhost"
+    generator_class=BothHttpAndHttpsSchemaGenerator,
 )
 
 

@@ -1,10 +1,9 @@
-from rest_framework import generics
-from django.contrib.admin.models import LogEntry
-from django.contrib.auth.models import User
-from .serializers import AdminLogSerializer
-# from constance.admin import get_values
-
+from rest_framework import views
+from rest_framework.response import Response
 from constance import settings, LazyConfig
+from rest_framework.viewsets import ViewSet
+
+
 config = LazyConfig()
 
 def get_values():
@@ -21,12 +20,11 @@ def get_values():
     initial = dict(default_initial, **dict(config._backend.mget(settings.CONFIG)))
     
     return initial
-class AdminLogAPIView(generics.ListAPIView):
+class SettingAPIView(ViewSet):
     
-    queryset = LogEntry.objects.all()
-    serializer_class = AdminLogSerializer
-    filename = 'my_export.xlsx'
-
     def get(self, request, *args, **kwargs):
         print(get_values(), '='*10)
-        return super().get(request, *args, **kwargs)
+        return Response(get_values(), )
+
+    def create(self, request, *args, **kwargs):
+        return Response(get_values(), )

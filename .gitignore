@@ -143,3 +143,4 @@ migrations/
 # files
 files/
 volumes_mysql
+volumes_mysql_2

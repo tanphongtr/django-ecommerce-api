@@ -16,6 +16,7 @@ graphene_django>=2.15.0
 tablib>=3.0.0
 django-constance>=2.8.0
 django-constance[database] # https://django-constance.readthedocs.io/
+django-constance[redis]
 django-tinymce>=3.3.0 # https://django-tinymce.readthedocs.io/
 pyjwt>=2.1.0 # https://pyjwt.readthedocs.io/ chua dung den
 
@@ -24,3 +25,5 @@ apscheduler>=3.7.0 # https://apscheduler.readthedocs.io/
 django-apscheduler>=0.5.2
 django-import-export
 # boto3 # Amazone S3
+
+jupyterlab
